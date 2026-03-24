@@ -1,6 +1,6 @@
 experiment:
-  name: "adamw_lora"
-  output_dir: "outputs/adamw_lora"
+  name: "adamw_lora_lr1e4"
+  output_dir: "outputs/adamw_lora_lr1e4"
   log_dir: "logs"
   seed: 42
 

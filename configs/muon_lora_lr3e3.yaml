@@ -1,6 +1,6 @@
 experiment:
-  name: "muon_lora"
-  output_dir: "outputs/muon_lora"
+  name: "muon_lora_lr3e3"
+  output_dir: "outputs/muon_lora_lr3e3"
   log_dir: "logs"
   seed: 42
 
