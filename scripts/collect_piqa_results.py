@@ -8,22 +8,18 @@ import yaml
 def resolve_latest_json(prefix: str) -> Path:
     prefix_path = Path(prefix)
 
-    # exact file exists
     if prefix_path.is_file():
         return prefix_path
 
-    # case 1: files like logs/name*.json
     direct_matches = sorted(prefix_path.parent.glob(prefix_path.name + "*.json"))
     if direct_matches:
         return max(direct_matches, key=lambda p: p.stat().st_mtime)
 
-    # case 2: lm_eval nested output dirs under prefix/
     if prefix_path.exists() and prefix_path.is_dir():
         nested_matches = sorted(prefix_path.rglob("results_*.json"))
         if nested_matches:
             return max(nested_matches, key=lambda p: p.stat().st_mtime)
 
-    # case 3: prefix may not exist yet, but a directory with that exact name may later contain results
     parent = prefix_path.parent if prefix_path.parent != Path("") else Path(".")
     candidate_dir = parent / prefix_path.name
     if candidate_dir.exists() and candidate_dir.is_dir():

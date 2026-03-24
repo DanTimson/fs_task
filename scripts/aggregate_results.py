@@ -54,7 +54,6 @@ def main():
 
         run_name = summary.get("run_name") or run_dir.name
 
-        # collect all step rows
         for row in train_rows:
             all_step_rows.append({
                 "run_name": run_name,
@@ -112,7 +111,6 @@ def main():
             "avg_optimizer_time_sec": avg_optimizer_time_sec,
         })
 
-    # write all step logs
     if all_step_rows:
         step_fields = list(all_step_rows[0].keys())
         with open(LOG_DIR / "all_train_logs.csv", "w", newline="", encoding="utf-8") as f:
@@ -120,7 +118,6 @@ def main():
             writer.writeheader()
             writer.writerows(all_step_rows)
 
-    # write run metrics
     if run_rows:
         run_rows.sort(key=lambda x: (x["optimizer_name"] or "", x["run_name"] or ""))
         run_fields = list(run_rows[0].keys())
@@ -129,7 +126,6 @@ def main():
             writer.writeheader()
             writer.writerows(run_rows)
 
-        # best per optimizer per workload
         grouped = {}
         for row in run_rows:
             key = (
