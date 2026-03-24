@@ -32,13 +32,13 @@ def load_config(config_path: str) -> Dict[str, Any]:
 
 def load_model_and_tokenizer(config: Dict[str, Any]):
     model_name = config["model"]["name"]
-    torch_dtype = getattr(torch, config["model"]["torch_dtype"])
+    dtype = getattr(torch, config["model"]["dtype"])
 
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     tokenizer.pad_token = tokenizer.eos_token
 
     model = AutoModelForCausalLM.from_pretrained(
-        model_name, torch_dtype=torch_dtype, device_map=None
+        model_name, dtype=dtype, device_map=None
     )
 
     lora_cfg = config["lora"]

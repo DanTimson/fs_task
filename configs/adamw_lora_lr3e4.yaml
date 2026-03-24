@@ -6,7 +6,7 @@ experiment:
 
 model:
   name: "Qwen/Qwen2.5-0.5B"
-  torch_dtype: "bfloat16"
+  dtype: "bfloat16"
 
 lora:
   r: 8
@@ -20,13 +20,13 @@ data:
   train_fraction: 0.01
   max_seq_len: 1024
   micro_batch_size: 4
-  grad_accum_steps: 4
+  grad_accum_steps: 1
   num_workers: 4
   max_samples: 4000
 
 training:
   epochs: 1
-  lr: 2.0e-4
+  lr: 3.0e-4
   weight_decay: 0.01
   warmup_ratio: 0.03
   max_grad_norm: 1.0

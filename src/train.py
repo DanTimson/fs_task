@@ -15,6 +15,7 @@ from src.collate import collate_batch
 from src.data import build_train_subset, tokenize_dataset
 from src.modeling import load_model_and_tokenizer
 from src.optim.adamw import build_adamw
+from src.optim.muon import build_muon
 
 
 def load_config(path: str) -> dict:
@@ -46,6 +47,7 @@ def save_json(obj: dict, path: str):
 
 def train(cfg: dict):
     ensure_dirs(cfg)
+    save_json(cfg, os.path.join(cfg["experiment"]["output_dir"], "config_used.json"))
     set_seed(cfg["experiment"]["seed"])
     device = pick_device()
 
@@ -72,11 +74,14 @@ def train(cfg: dict):
         pin_memory=False,
     )
 
-    optimizer_name = cfg["optimizer"]["name"]
-    if optimizer_name != "adamw":
-        raise ValueError(f"Only adamw is wired in this first runnable version, got: {optimizer_name}")
+    optimizer_name = cfg["optimizer"]["name"].lower()
 
-    optimizer = build_adamw(model, cfg)
+    if optimizer_name == "adamw":
+        optimizer = build_adamw(model, cfg)
+    elif optimizer_name == "muon":
+        optimizer = build_muon(model, cfg)
+    else:
+        raise ValueError(f"Unsupported optimizer: {optimizer_name}")
 
     grad_accum = cfg["data"]["grad_accum_steps"]
     total_update_steps = math.ceil(len(dataloader) / grad_accum) * cfg["training"]["epochs"]
@@ -158,6 +163,7 @@ def train(cfg: dict):
                         "epoch": epoch,
                         "global_step": global_step,
                         "optimizer_step": optimizer_step,
+                        "did_optimizer_step": did_step,
                         "loss": running_loss / cfg["training"]["log_every"],
                         "lr": scheduler.get_last_lr()[0],
                         "step_time_sec": step_time,

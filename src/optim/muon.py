@@ -356,3 +356,49 @@ def split_muon_params(model):
             adam_params.append(p)
 
     return muon_params, adam_params
+
+def build_muon(model, cfg: dict):
+    lr = cfg["training"]["lr"]
+    weight_decay = cfg["training"]["weight_decay"]
+
+    muon_params = []
+    adam_params = []
+
+    for name, p in model.named_parameters():
+        if not p.requires_grad:
+            continue
+
+        if p.ndim >= 2 and "embed_tokens" not in name and "lm_head" not in name:
+            muon_params.append(p)
+        else:
+            adam_params.append(p)
+
+    param_groups = []
+
+    if muon_params:
+        param_groups.append(
+            {
+                "params": muon_params,
+                "use_muon": True,
+                "lr": lr,
+                "weight_decay": weight_decay,
+                "momentum": 0.95,
+            }
+        )
+
+    if adam_params:
+        param_groups.append(
+            {
+                "params": adam_params,
+                "use_muon": False,
+                "lr": lr,
+                "betas": (0.9, 0.95),
+                "eps": 1e-10,
+                "weight_decay": weight_decay,
+            }
+        )
+
+    if not param_groups:
+        raise ValueError("No trainable parameters found for Muon")
+
+    return SingleDeviceMuonWithAuxAdam(param_groups)

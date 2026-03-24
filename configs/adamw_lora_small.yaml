@@ -1,12 +1,12 @@
 experiment:
-  name: "muon_lora"
-  output_dir: "outputs/adamw_lora"
+  name: "adamw_lora_small"
+  output_dir: "outputs/adamw_lora_small"
   log_dir: "logs"
   seed: 42
 
 model:
   name: "Qwen/Qwen2.5-0.5B"
-  torch_dtype: "bfloat16"
+  dtype: "bfloat16"
 
 lora:
   r: 8
@@ -18,10 +18,10 @@ data:
   dataset_name: "Elriggs/openwebtext-100k"
   text_column: "text"
   train_fraction: 0.01
-  max_seq_len: 1024
-  micro_batch_size: 4
-  grad_accum_steps: 4
-  num_workers: 4
+  max_seq_len: 512
+  micro_batch_size: 1
+  grad_accum_steps: 8
+  num_workers: 2
   max_samples: 4000
 
 training:
@@ -34,7 +34,7 @@ training:
   save_every: 200
 
 optimizer:
-  name: "muon"
+  name: "adamw"
 
 output:
   eval_file: "eval_results.json"
