@@ -14,5 +14,4 @@ wheels/
 datasets/
 models/
 outputs/
-logs/
 lm-evaluation-harness/

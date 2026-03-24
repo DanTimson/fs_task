@@ -1,0 +1,10 @@
+PyYAML
+numpy
+pandas
+datasets
+transformers
+peft
+sentencepiece
+safetensors
+tqdm
+huggingface_hub

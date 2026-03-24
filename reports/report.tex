@@ -35,17 +35,16 @@ PIQA results were nearly identical for the two fine-tuned models and slightly be
 
 \section{Introduction}
 Optimizer choice affects both training dynamics and practical efficiency.
-The task for this project is to compare recent optimization strategies for Qwen2.5-0.5B LoRA fine-tuning using training time, maximum memory usage, final model quality, and convergence as the main criteria.
+The task for this project is to compare optimization strategies for Qwen2.5-0.5B LoRA fine-tuning using training time, maximum memory usage, final model quality, and convergence as the main criteria.
 The required training data source is at least 1\% of OpenWebText-100k, and the evaluation benchmark is PIQA.
 The baseline optimizers required by the task are AdamW and Muon.
 
 The present work focuses on a reproducible base-task comparison between AdamW and Muon on a single AMD Radeon RX 7900 XTX GPU under ROCm.
-Challenge extensions such as MeZO and deliberate Muon+AdamW hybrid training are left for follow-up work.
 
 \section{Experimental Setup}
 \subsection{Hardware and software}
 Experiments were run on an AMD Radeon RX 7900 XTX with ROCm-enabled PyTorch.
-The training code uses Hugging Face Transformers and PEFT, but the training loop itself is implemented manually rather than through an orchestration framework such as Accelerate, in order to keep timing and memory measurements explicit.
+The training code uses Hugging Face Transformers and PEFT, but the training loop itself is implemented manually.
 
 \subsection{Model and adaptation setup}
 The base model is Qwen2.5-0.5B.
@@ -57,15 +56,8 @@ Therefore, although the code path used a Muon wrapper capable of handling an Ada
 
 \subsection{Training data and workload}
 All main experiments used the same workload:
-\begin{itemize}[leftmargin=1.5em]
-    \item 5,000 samples from \texttt{Elriggs/openwebtext-100k}
-    \item sequence length 512
-    \item micro-batch size 4
-    \item gradient accumulation 1
-    \item effective batch size 4
-    \item 2 epochs
-    \item seed 42
-\end{itemize}
+    5,000 samples from \texttt{Elriggs/openwebtext-100k}, sequence length 512, batch size 4 and 2 epochs.
+
 
 A learning-rate sweep was performed separately for AdamW and Muon:
 \begin{itemize}[leftmargin=1.5em]
@@ -75,14 +67,7 @@ A learning-rate sweep was performed separately for AdamW and Muon:
 
 \subsection{Metrics}
 For each run, the following quantities were recorded:
-\begin{itemize}[leftmargin=1.5em]
-    \item total training time
-    \item peak GPU memory
-    \item average loss over the last 10 logged points
-    \item final logged loss
-    \item average per-step time
-    \item average optimizer-step time
-\end{itemize}
+    total training time, peak GPU memory, average loss over the last 10 logged points, final logged loss, average per-step time and average optimizer-step time.
 
 For downstream quality, the best tuned AdamW and Muon checkpoints were evaluated on PIQA with \texttt{lm-evaluation-harness}.
 The unfine-tuned base model was also evaluated as a reference point.
@@ -130,41 +115,8 @@ Muon  & 0.001 & 398.84 & 7.544 & 2.503 & 2.529 & 0.0293 \\
 \end{tabular}
 \end{table}
 
-The optimizer-step overhead is visualized in Figure~\ref{fig:opt-overhead}.
-Muon's average optimizer-step time is much larger than AdamW's, which explains why it does not translate into a wall-clock advantage here.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.62\textwidth]{figures/best_optimizer_overhead.png}
-    \caption{Average optimizer-step time for the best matched runs.}
-    \label{fig:opt-overhead}
-\end{figure}
-
-Figures~\ref{fig:best-time}, \ref{fig:best-mem}, and \ref{fig:best-loss} summarize the main matched comparison.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.58\textwidth]{figures/best_time_comparison.png}
-    \caption{Total training time for the best matched runs.}
-    \label{fig:best-time}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.58\textwidth]{figures/best_memory_comparison.png}
-    \caption{Peak GPU memory for the best matched runs.}
-    \label{fig:best-mem}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.58\textwidth]{figures/best_tail_loss_comparison.png}
-    \caption{Average loss over the last 10 logged points for the best matched runs.}
-    \label{fig:best-loss}
-\end{figure}
-
 \subsection{PIQA evaluation}
-PIQA results are shown in Table~\ref{tab:piqa} and Figure~\ref{fig:piqa}.
+PIQA results are shown in Table~\ref{tab:piqa}.
 The unfine-tuned base model achieved the highest PIQA accuracy in this comparison.
 Both fine-tuned models obtained nearly identical PIQA scores, and both were slightly lower than the base model.
 This indicates that short generic-text fine-tuning on OpenWebText does not meaningfully improve PIQA in this setup.
@@ -175,45 +127,20 @@ This indicates that short generic-text fine-tuning on OpenWebText does not meani
 \label{tab:piqa}
 \begin{tabular}{lrr}
 \toprule
-Model & Accuracy & Std. error \\
+Model & Accuracy \\
 \midrule
-Base Qwen2.5-0.5B & 0.7051 & 0.0106 \\
-AdamW fine-tuned & 0.6997 & 0.0107 \\
-Muon fine-tuned & 0.6997 & 0.0107 \\
+Base Qwen2.5-0.5B & 0.7051 \\
+AdamW fine-tuned & 0.6997 \\
+Muon fine-tuned & 0.6997 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.62\textwidth]{figures/piqa_accuracy.png}
-    \caption{PIQA accuracy with standard error bars.}
-    \label{fig:piqa}
-\end{figure}
-
 \section{Discussion}
-The main practical result is that AdamW was the better optimizer for this specific LoRA fine-tuning regime.
-Its training loss was marginally lower, its total runtime was substantially lower, and its peak memory usage was indistinguishable from Muon's.
-
-The likely reason is the trainable-parameter regime.
-Muon is designed around orthogonalized updates for matrix-like parameters, and this can be attractive when large dense hidden weights are trained.
-In the present setup, however, only a relatively small set of low-rank LoRA matrices is trainable.
-As a result, the orthogonalization step introduces noticeable optimizer overhead without producing a compensating memory or convergence advantage.
-
-The PIQA results reinforce a second point: the fine-tuning corpus and evaluation benchmark matter.
+The PIQA results show that the fine-tuning corpus and evaluation benchmark matter.
 OpenWebText is a generic web-text corpus, while PIQA is a physical commonsense reasoning benchmark.
 Under short fine-tuning with only 5,000 text samples, neither optimizer produced a measurable PIQA gain relative to the base model.
 This suggests that the training objective improved adaptation to the training distribution more than it improved task-specific reasoning ability.
-
-\section{Limitations}
-This study has several limitations:
-\begin{itemize}[leftmargin=1.5em]
-    \item only one model size was tested
-    \item only LoRA fine-tuning was considered, not full-model fine-tuning
-    \item only one LoRA target pattern (\texttt{q\_proj}, \texttt{v\_proj}) was used
-    \item the training corpus is generic web text, not PIQA-specific supervision
-    \item challenge experiments (MeZO and a deliberate Muon+AdamW split with non-empty branches) were not included in the main comparison
-\end{itemize}
 
 \section{Conclusion}
 For LoRA fine-tuning of Qwen2.5-0.5B on an RX 7900 XTX under a matched 5,000-sample, 2-epoch setup, AdamW and Muon achieved similar training losses, but AdamW was materially faster and used the same amount of peak memory.
