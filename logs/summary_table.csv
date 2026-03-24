@@ -1,3 +1,0 @@
-run_name,optimizer_name,learning_rate,epochs,num_train_samples,max_seq_len,micro_batch_size,grad_accum_steps,effective_batch_size,total_time_sec,peak_mem_gb,optimizer_steps,seed,device,final_logged_loss,final_logged_lr,final_logged_mem_peak_gb
-adamw_lora,adamw,0.001,2,5000,512,4,1,4,322.4424698352814,7.546240329742432,2500,42,cuda,2.495924472808838,0.0,7.546240329742432
-muon_lora,muon,0.01,2,5000,512,4,1,4,399.3100733757019,7.544226169586182,2500,42,cuda,6.141344308853149,0.0,7.544226169586182

@@ -1,0 +1,18 @@
+{
+  "run_name": "adamw_lora_lr3e4",
+  "optimizer_name": "adamw",
+  "learning_rate": 0.0003,
+  "total_time_sec": 318.94163489341736,
+  "peak_mem_gb": 7.546240329742432,
+  "optimizer_steps": 2500,
+  "device": "cuda",
+  "seed": 42,
+  "epochs": 2,
+  "num_train_samples": 5000,
+  "max_seq_len": 512,
+  "micro_batch_size": 4,
+  "grad_accum_steps": 1,
+  "effective_batch_size": 4,
+  "weight_decay": 0.01,
+  "warmup_ratio": 0.03
+}
