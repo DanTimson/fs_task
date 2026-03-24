@@ -1,0 +1,20 @@
+[project]
+name = "llm-training-acceleration"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "accelerate>=1.13.0",
+    "datasets>=4.8.3",
+    "huggingface-hub>=0.36.2",
+    "jupyter>=1.1.1",
+    "lm-eval[api,hf,vllm]>=0.4.11",
+    "matplotlib>=3.10.8",
+    "peft>=0.18.1",
+    "ruff>=0.15.7",
+    "torch>=2.10.0",
+    "tqdm>=4.67.3",
+    "transformers==4.57.5",
+    "uv>=0.10.12",
+]
