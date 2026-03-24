@@ -1,0 +1,40 @@
+experiment:
+  name: "muon_lora_lr3e4"
+  output_dir: "outputs/muon_lora_lr3e4"
+  log_dir: "logs"
+  seed: 42
+
+model:
+  name: "Qwen/Qwen2.5-0.5B"
+  dtype: "bfloat16"
+
+lora:
+  r: 8
+  alpha: 16
+  dropout: 0.1
+  target_modules: ["q_proj", "v_proj"]
+
+data:
+  dataset_name: "Elriggs/openwebtext-100k"
+  text_column: "text"
+  train_fraction: 0.05
+  max_seq_len: 512
+  micro_batch_size: 4
+  grad_accum_steps: 1
+  num_workers: 2
+  max_samples: 5000
+
+training:
+  epochs: 2
+  lr: 3.0e-4
+  weight_decay: 0.01
+  warmup_ratio: 0.03
+  max_grad_norm: 1.0
+  log_every: 10
+  save_every: 200
+
+optimizer:
+  name: "muon"
+
+output:
+  eval_file: "eval_results.json"
