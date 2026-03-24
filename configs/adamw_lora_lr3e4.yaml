@@ -25,7 +25,7 @@ data:
   max_samples: 4000
 
 training:
-  epochs: 1
+  epochs: 2
   lr: 3.0e-4
   weight_decay: 0.01
   warmup_ratio: 0.03

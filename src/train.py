@@ -184,6 +184,9 @@ def train(cfg: dict):
     tokenizer.save_pretrained(cfg["experiment"]["output_dir"])
 
     summary = {
+        "run_name": cfg["experiment"]["name"],
+        "optimizer_name": cfg["optimizer"]["name"],
+        "learning_rate": cfg["training"]["lr"],
         "total_time_sec": total_time,
         "peak_mem_gb": (
             torch.cuda.max_memory_allocated(device) / 1024**3
@@ -192,6 +195,17 @@ def train(cfg: dict):
         ),
         "optimizer_steps": optimizer_step,
         "device": str(device),
+        "seed": cfg["experiment"]["seed"],
+        "epochs": cfg["training"]["epochs"],
+        "num_train_samples": cfg["data"]["max_samples"],
+        "max_seq_len": cfg["data"]["max_seq_len"],
+        "micro_batch_size": cfg["data"]["micro_batch_size"],
+        "grad_accum_steps": cfg["data"]["grad_accum_steps"],
+        "effective_batch_size": (
+            cfg["data"]["micro_batch_size"] * cfg["data"]["grad_accum_steps"]
+        ),
+        "weight_decay": cfg["training"]["weight_decay"],
+        "warmup_ratio": cfg["training"]["warmup_ratio"],
     }
     save_json(summary, summary_path)
 
