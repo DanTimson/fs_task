@@ -13,3 +13,6 @@ wheels/
 # Source files
 datasets/
 models/
+outputs/
+logs/
+lm-evaluation-harness/
