@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/remote/fs_task/fs_task/src/train.py", line 212, in <module>
+    main()
+  File "/home/remote/fs_task/fs_task/src/train.py", line 207, in main
+    cfg = load_config(args.config)
+          ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/remote/fs_task/fs_task/src/train.py", line 22, in load_config
+    with open(path, "r", encoding="utf-8") as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'configs/adamwlr1e4.yaml'

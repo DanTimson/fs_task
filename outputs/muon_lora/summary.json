@@ -1,0 +1,18 @@
+{
+  "run_name": "muon_lora",
+  "optimizer_name": "muon",
+  "learning_rate": 0.01,
+  "total_time_sec": 80.66295599937439,
+  "peak_mem_gb": 7.543671131134033,
+  "optimizer_steps": 500,
+  "device": "cuda",
+  "seed": 42,
+  "epochs": 2,
+  "num_train_samples": 4000,
+  "max_seq_len": 512,
+  "micro_batch_size": 4,
+  "grad_accum_steps": 1,
+  "effective_batch_size": 4,
+  "weight_decay": 0.01,
+  "warmup_ratio": 0.03
+}

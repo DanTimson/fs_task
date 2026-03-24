@@ -13,5 +13,3 @@ wheels/
 # Source files
 datasets/
 models/
-logs/
-outputs/
