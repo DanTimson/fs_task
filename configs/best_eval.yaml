@@ -1,9 +1,12 @@
+base:
+  piqa_prefix: "logs/qwen25_0p5b_base_piqa"
+
 adamw:
   adapter_dir: "outputs/adamw_lora_lr1e3"
   merged_dir: "outputs/adamw_lora_lr1e3_merged"
   piqa_prefix: "logs/adamw_lora_lr1e3_piqa"
 
 muon:
-  adapter_dir: "outputs/muon_lora_lr1e3"
-  merged_dir: "outputs/muon_lora_lr1e3_merged"
-  piqa_prefix: "logs/muon_lora_lr1e3_piqa"
+  adapter_dir: "outputs/muon_lora_lr1e2"
+  merged_dir: "outputs/muon_lora_lr1e2_merged"
+  piqa_prefix: "logs/muon_lora_lr1e2_piqa"

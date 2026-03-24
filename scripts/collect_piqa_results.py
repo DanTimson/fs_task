@@ -30,6 +30,7 @@ def main():
         results = data.get("results", {}).get("piqa", {})
         row = {
             "run_label": name,
+            "model_kind": "base" if name == "base" else "finetuned",
             "piqa_acc": results.get("acc,none"),
             "piqa_acc_stderr": results.get("acc_stderr,none"),
             "piqa_norm_acc": results.get("acc_norm,none"),
